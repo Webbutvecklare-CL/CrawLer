@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 1000px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#bb291d", "id": "dokument", "label": "dokument", "shape": "dot", "size": 20}, {"color": "#bb291d", "id": "alkoholservering", "label": "alkoholservering", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "lokalbokning", "label": "lokalbokning", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "personuppgifter", "label": "personuppgifter", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "utlagg", "label": "utlagg", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "", "label": "", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "mottagning", "label": "mottagning", "shape": "dot", "size": 20}, {"color": "#bb291d", "id": "hjalp-vid-illabehandling", "label": "hjalp-vid-illabehandling", "shape": "dot", "size": 30}, {"color": "#bb291d", "id": "for-foretag", "label": "for-foretag", "shape": "dot", "size": 30}, {"color": "#bb291d", "id": "samarbeten", "label": "samarbeten", "shape": "dot", "size": 20}, {"color": "#bb291d", "id": "om-oss", "label": "om-oss", "shape": "dot", "size": 20}, {"color": "#bb291d", "id": "kontakt", "label": "kontakt", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "aktuellt", "label": "aktuellt", "shape": "dot", "size": 20}, {"color": "#bb291d", "id": "kakor", "label": "kakor", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "ntc", "label": "ntc", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "personalrummet", "label": "personalrummet", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "kalender", "label": "kalender", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "fortroendevalda", "label": "fortroendevalda", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "engagera-dig", "label": "engagera-dig", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "hedersutmarkelser", "label": "hedersutmarkelser", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "vfu", "label": "vfu", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "alumniblogg", "label": "alumniblogg", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "reseberattelser", "label": "reseberattelser", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "studiebevakning", "label": "studiebevakning", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "valbara-kurser", "label": "valbara-kurser", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "sangbok", "label": "sangbok", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "ordbok", "label": "ordbok", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "mollie-wejdenstolpe", "label": "mollie-wejdenstolpe", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "malin-engquist", "label": "malin-engquist", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "erik-evers", "label": "erik-evers", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "henrik-moberg", "label": "henrik-moberg", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "isabelle-wahlund", "label": "isabelle-wahlund", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "andreas-martensson", "label": "andreas-martensson", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "victor-dahlberg", "label": "victor-dahlberg", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "anton-sundberg-usa", "label": "anton-sundberg-usa", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "caroline-stejmar-kanada", "label": "caroline-stejmar-kanada", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "astrid-h%C3%A4ggstr%C3%B6m-usa", "label": "astrid-h%C3%A4ggstr%C3%B6m-usa", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "ida-marie-freden-usa", "label": "ida-marie-freden-usa", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "sabina-permats-usa", "label": "sabina-permats-usa", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "camilla-bj%C3%B6rn-irland", "label": "camilla-bj%C3%B6rn-irland", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "camilla-bj%C3%B6rn-tyskland", "label": "camilla-bj%C3%B6rn-tyskland", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "ida-fantenberg-niklasson-irland", "label": "ida-fantenberg-niklasson-irland", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "julia-engstr%C3%B6m-italien", "label": "julia-engstr%C3%B6m-italien", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "ewa-h%C3%B6rnlund-tjeckien", "label": "ewa-h%C3%B6rnlund-tjeckien", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "philip-gullberg-tjeckien", "label": "philip-gullberg-tjeckien", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "william-friefeldt-taiwan", "label": "william-friefeldt-taiwan", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "furkan-kocak-turkiet", "label": "furkan-kocak-turkiet", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "albin-westlin-singapore", "label": "albin-westlin-singapore", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "anna-stolpe-australien", "label": "anna-stolpe-australien", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "emelie-selinder-australien", "label": "emelie-selinder-australien", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "veronica-vilbern-botswana", "label": "veronica-vilbern-botswana", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "edith-jacobson-botswana", "label": "edith-jacobson-botswana", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "porthos_visa", "label": "porthos_visa", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "en_liten_bla_forgatmigej", "label": "en_liten_bla_forgatmigej", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "tack_sangen", "label": "tack_sangen", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "kungssangen", "label": "kungssangen", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "o_gamla_klang_och_jubeltid", "label": "o_gamla_klang_och_jubeltid", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "du_gamla_du_fria", "label": "du_gamla_du_fria", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "studentsangen", "label": "studentsangen", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "svara_ord", "label": "svara_ord", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "livsmusik", "label": "livsmusik", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "fredmans_sang_nr_21", "label": "fredmans_sang_nr_21", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "spritbolaget", "label": "spritbolaget", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "supen", "label": "supen", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "festen_ska_borjas", "label": "festen_ska_borjas", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "mellansup", "label": "mellansup", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "vi_dricka_vi_dricka", "label": "vi_dricka_vi_dricka", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "jag_ska_festa", "label": "jag_ska_festa", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "kalmare_visan", "label": "kalmare_visan", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "det_regnar_ner_i_dalen", "label": "det_regnar_ner_i_dalen", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "en_kan_dricka_vatten", "label": "en_kan_dricka_vatten", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "full_ar_bast", "label": "full_ar_bast", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "danse_macabre", "label": "danse_macabre", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "vi_ska_supa", "label": "vi_ska_supa", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "hallen_lutar", "label": "hallen_lutar", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "i_californien", "label": "i_californien", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "dominoeffekten", "label": "dominoeffekten", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "lyft_ditt_valforsedda_glas", "label": "lyft_ditt_valforsedda_glas", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "forsvarstal_for_broder_tuck", "label": "forsvarstal_for_broder_tuck", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "finland_ar_finland", "label": "finland_ar_finland", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "strejk_pa_pripps", "label": "strejk_pa_pripps", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "ol_ol_ol_i_glas", "label": "ol_ol_ol_i_glas", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "en_pilsnerdrickare", "label": "en_pilsnerdrickare", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "ode_till_skon", "label": "ode_till_skon", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "vi_alskar_ol", "label": "vi_alskar_ol", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "bordeaux_bordeaux", "label": "bordeaux_bordeaux", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "varvinets_lov", "label": "varvinets_lov", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "femton_fransyskor", "label": "femton_fransyskor", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "crassus_vinsang", "label": "crassus_vinsang", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "vinet_skanker", "label": "vinet_skanker", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "du_gamla_vin", "label": "du_gamla_vin", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "spegelvisan", "label": "spegelvisan", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "moosen", "label": "moosen", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "masen", "label": "masen", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "den_vingklippta_masen", "label": "den_vingklippta_masen", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "jasen", "label": "jasen", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "musen", "label": "musen", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "byssan_full", "label": "byssan_full", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "du_ska_fa_mitt_gamla_snapsglas", "label": "du_ska_fa_mitt_gamla_snapsglas", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "vem_sade_ordet_skal", "label": "vem_sade_ordet_skal", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "en_gang_i_manen", "label": "en_gang_i_manen", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "kastasupen", "label": "kastasupen", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "snapsens_abc", "label": "snapsens_abc", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "fiskarna", "label": "fiskarna", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "humlorna", "label": "humlorna", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "anglarna", "label": "anglarna", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "gums_visa", "label": "gums_visa", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "hej_tomtegubbar", "label": "hej_tomtegubbar", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "toj_hemtegubbar", "label": "toj_hemtegubbar", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "sadesfalten", "label": "sadesfalten", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "tank_om_jag_hade_lilla_nubben", "label": "tank_om_jag_hade_lilla_nubben", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "tank_om_jag_inte_var_sa_trakig", "label": "tank_om_jag_inte_var_sa_trakig", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "den_som_spar_hen_har", "label": "den_som_spar_hen_har", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "vikingen", "label": "vikingen", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "planksaft", "label": "planksaft", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "grav_ur_skandinaviska_tundran", "label": "grav_ur_skandinaviska_tundran", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "denna_thaft", "label": "denna_thaft", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "fkane_faft", "label": "fkane_faft", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "hell_and_gore", "label": "hell_and_gore", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "punschen_kommer_kall", "label": "punschen_kommer_kall", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "punschen_kommer_varm", "label": "punschen_kommer_varm", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "alla_sorters_punsch", "label": "alla_sorters_punsch", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "punsch_punsch", "label": "punsch_punsch", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "djungelpunsch", "label": "djungelpunsch", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "festus_punschvisa", "label": "festus_punschvisa", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "punschens_lov", "label": "punschens_lov", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "nar_kaffet_ar_serverat", "label": "nar_kaffet_ar_serverat", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "punschen_punschen", "label": "punschen_punschen", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "sveriges_arraktionalhymn", "label": "sveriges_arraktionalhymn", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "sista_punschvisan", "label": "sista_punschvisan", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "enhetsvisan", "label": "enhetsvisan", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "imperial_system", "label": "imperial_system", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "kemisangen", "label": "kemisangen", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "emojivisan", "label": "emojivisan", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "matlab", "label": "matlab", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "en_liten_teknolog", "label": "en_liten_teknolog", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "siffervisan", "label": "siffervisan", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "o_hemska_labb", "label": "o_hemska_labb", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "integrera", "label": "integrera", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "800_rader", "label": "800_rader", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "en_matematiker", "label": "en_matematiker", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "sang_om_tentor", "label": "sang_om_tentor", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "identitetskris", "label": "identitetskris", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "livet_i_grattan", "label": "livet_i_grattan", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "grattans_sang", "label": "grattans_sang", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "jag_har_aldrig", "label": "jag_har_aldrig", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "en_bergsman_alskar", "label": "en_bergsman_alskar", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "data_sektionssang", "label": "data_sektionssang", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "fyll_pa", "label": "fyll_pa", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "har_kommer_det_elektriker", "label": "har_kommer_det_elektriker", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "liljekonvaljen", "label": "liljekonvaljen", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "pojkar_pa_w", "label": "pojkar_pa_w", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "s_ingenjoren", "label": "s_ingenjoren", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "mediehymnen", "label": "mediehymnen", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "moder_kista", "label": "moder_kista", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "konglig_fysiks_paradhymn", "label": "konglig_fysiks_paradhymn", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "veritas_hermetica", "label": "veritas_hermetica", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "ingenjorssektionens_sang", "label": "ingenjorssektionens_sang", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "flygarsupen", "label": "flygarsupen", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "lararsangen", "label": "lararsangen", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "langt_ner_i_smaland", "label": "langt_ner_i_smaland", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "en_arkitektstudent", "label": "en_arkitektstudent", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "telges_sang", "label": "telges_sang", "shape": "dot", "size": 10}, {"color": "#bb291d", "id": "de_har_kallat_oss_svin", "label": "de_har_kallat_oss_svin", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#8a2419", "from": "dokument", "to": "alkoholservering", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "dokument", "to": "lokalbokning", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "dokument", "to": "personuppgifter", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "dokument", "to": "utlagg", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "mottagning", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "hjalp-vid-illabehandling", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "for-foretag", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "samarbeten", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "om-oss", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "kontakt", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "aktuellt", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "dokument", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "kakor", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "ntc", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "personalrummet", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "kalender", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "fortroendevalda", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "engagera-dig", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "hedersutmarkelser", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "vfu", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "alumniblogg", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "reseberattelser", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "studiebevakning", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "valbara-kurser", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "sangbok", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "", "to": "ordbok", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "alumniblogg", "to": "mollie-wejdenstolpe", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "alumniblogg", "to": "malin-engquist", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "alumniblogg", "to": "erik-evers", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "alumniblogg", "to": "henrik-moberg", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "alumniblogg", "to": "isabelle-wahlund", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "alumniblogg", "to": "andreas-martensson", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "alumniblogg", "to": "victor-dahlberg", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "reseberattelser", "to": "anton-sundberg-usa", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "reseberattelser", "to": "caroline-stejmar-kanada", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "reseberattelser", "to": "astrid-h%C3%A4ggstr%C3%B6m-usa", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "reseberattelser", "to": "ida-marie-freden-usa", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "reseberattelser", "to": "sabina-permats-usa", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "reseberattelser", "to": "camilla-bj%C3%B6rn-irland", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "reseberattelser", "to": "camilla-bj%C3%B6rn-tyskland", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "reseberattelser", "to": "ida-fantenberg-niklasson-irland", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "reseberattelser", "to": "julia-engstr%C3%B6m-italien", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "reseberattelser", "to": "ewa-h%C3%B6rnlund-tjeckien", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "reseberattelser", "to": "philip-gullberg-tjeckien", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "reseberattelser", "to": "william-friefeldt-taiwan", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "reseberattelser", "to": "furkan-kocak-turkiet", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "reseberattelser", "to": "albin-westlin-singapore", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "reseberattelser", "to": "anna-stolpe-australien", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "reseberattelser", "to": "emelie-selinder-australien", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "reseberattelser", "to": "veronica-vilbern-botswana", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "reseberattelser", "to": "edith-jacobson-botswana", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "porthos_visa", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "en_liten_bla_forgatmigej", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "tack_sangen", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "kungssangen", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "o_gamla_klang_och_jubeltid", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "du_gamla_du_fria", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "studentsangen", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "svara_ord", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "livsmusik", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "fredmans_sang_nr_21", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "spritbolaget", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "supen", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "festen_ska_borjas", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "mellansup", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "vi_dricka_vi_dricka", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "jag_ska_festa", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "kalmare_visan", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "det_regnar_ner_i_dalen", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "en_kan_dricka_vatten", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "full_ar_bast", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "danse_macabre", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "vi_ska_supa", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "hallen_lutar", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "i_californien", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "dominoeffekten", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "lyft_ditt_valforsedda_glas", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "forsvarstal_for_broder_tuck", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "finland_ar_finland", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "strejk_pa_pripps", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "ol_ol_ol_i_glas", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "en_pilsnerdrickare", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "ode_till_skon", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "vi_alskar_ol", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "bordeaux_bordeaux", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "varvinets_lov", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "femton_fransyskor", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "crassus_vinsang", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "vinet_skanker", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "du_gamla_vin", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "spegelvisan", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "moosen", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "masen", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "den_vingklippta_masen", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "jasen", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "musen", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "byssan_full", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "du_ska_fa_mitt_gamla_snapsglas", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "vem_sade_ordet_skal", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "en_gang_i_manen", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "kastasupen", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "snapsens_abc", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "fiskarna", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "humlorna", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "anglarna", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "gums_visa", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "hej_tomtegubbar", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "toj_hemtegubbar", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "sadesfalten", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "tank_om_jag_hade_lilla_nubben", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "tank_om_jag_inte_var_sa_trakig", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "den_som_spar_hen_har", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "vikingen", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "planksaft", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "grav_ur_skandinaviska_tundran", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "denna_thaft", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "fkane_faft", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "hell_and_gore", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "punschen_kommer_kall", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "punschen_kommer_varm", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "alla_sorters_punsch", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "punsch_punsch", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "djungelpunsch", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "festus_punschvisa", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "punschens_lov", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "nar_kaffet_ar_serverat", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "punschen_punschen", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "sveriges_arraktionalhymn", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "sista_punschvisan", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "enhetsvisan", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "imperial_system", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "kemisangen", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "emojivisan", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "matlab", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "en_liten_teknolog", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "siffervisan", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "o_hemska_labb", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "integrera", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "800_rader", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "en_matematiker", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "sang_om_tentor", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "identitetskris", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "livet_i_grattan", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "grattans_sang", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "jag_har_aldrig", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "en_bergsman_alskar", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "data_sektionssang", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "fyll_pa", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "har_kommer_det_elektriker", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "liljekonvaljen", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "pojkar_pa_w", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "s_ingenjoren", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "mediehymnen", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "moder_kista", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "konglig_fysiks_paradhymn", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "veritas_hermetica", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "ingenjorssektionens_sang", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "flygarsupen", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "lararsangen", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "langt_ner_i_smaland", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "en_arkitektstudent", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "telges_sang", "width": 1}, {"arrows": "to", "color": "#8a2419", "from": "sangbok", "to": "de_har_kallat_oss_svin", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
